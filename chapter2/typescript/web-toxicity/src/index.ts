@@ -1,15 +1,39 @@
-import "@tensorflow/tfjs";
-import * as toxicity from "@tensorflow-models/toxicity";
+import "@tensorflow/tfjs"
+import * as toxicity from "@tensorflow-models/toxicity"
 
 // minimum positive prediction confidence
 // If this isn't passed, the default is 0.85
 const threshold: number = 0.5;
 
-toxicity.load(threshold, []).then((model) => {
-  const sentences = ["You are a poopy head!", "I like turtles", "Shut up!"];
+const form = document.getElementById("comment-form")
 
-  model.classify(sentences).then((predictions) => {
-    // semi-pretty-print results
-    console.log(JSON.stringify(predictions, null, 2));
-  });
-});
+form?.addEventListener("submit", (event) => {
+  event.preventDefault()
+
+  if (event.target !== null) {
+    const inputValue = event.target[0].value
+    processCommentWithML(inputValue)
+  }
+  else console.log("Element structure has changed")
+})
+
+function processCommentWithML(sentence: String) {
+  toxicity.load(threshold, []).then((model) => {
+    const sentences = [sentence.toString()]
+  
+    model.classify(sentences).then((predictions) => {
+      // semi-pretty-print results
+      const JSONprediction = JSON.stringify(predictions, null, 2)
+      const answerContainer = document.querySelector("#answer-container")
+      console.log(JSONprediction)
+
+      const list = predictions.map((item) => 
+        "<li><b>" + item.label + "</b> " +
+        JSON.stringify(item.results[0]) +
+        "</li>"
+      )
+
+      if (answerContainer) answerContainer.innerHTML = list.join("")
+    })
+  })
+}
