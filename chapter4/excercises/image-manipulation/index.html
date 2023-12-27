@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js"></script>
+    <style>
+      .wrapper {
+        display: flex;
+        flex-direction: row;
+      }
+      .wrapper > div {
+        width: 50%;
+      }
+      .wrapper > div img {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="image-manipulation">
+      <h1>Manipulating data for tensors</h1>
+
+      <div id="excerice-wrapper">
+        <h2>Flipping an image</h2>
+        <div id="flipping-wrapper" class="wrapper">
+          <div>
+            <h3>Original Image</h3>
+            <img id="flipped-image" src="images/lemonade.jpg" />
+          </div>
+          <div>
+            <h3>Manipulated Image</h3>
+            <canvas id="flipped-canvas" />
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <p>
+      <small>Images are originally from Gant Laborde's "simple image manipulation" project.</small>
+    </p>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

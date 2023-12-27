@@ -1,0 +1,21 @@
+{
+  "name": "manipulating-images-for-tf",
+  "version": "1.0.0",
+  "description": "Manipulating images using tools that are often used when working on tf projects or AI projects in general.",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.0.0",
+    "@tensorflow/tfjs-node": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.2.0",
+    "parcel-bundler": "^1.6.1"
+  },
+  "keywords": [
+    "TensorFlow.js"
+  ]
+}
