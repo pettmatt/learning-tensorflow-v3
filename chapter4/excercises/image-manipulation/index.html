@@ -10,8 +10,13 @@
       .wrapper > div {
         width: 50%;
       }
-      .wrapper > div img {
+      .wrapper > .manipulate-width img,
+      .wrapper > .manipulate-width canvas {
         width: 100%;
+      }
+      .canvas-wrapper {
+        display: flex;
+        flex-direction: column;
       }
     </style>
   </head>
@@ -23,17 +28,44 @@
       <div id="excerice-wrapper">
         <h2>Flipping an image</h2>
         <div id="flipping-wrapper" class="wrapper">
-          <div>
+          <div class="manipulate-width">
             <h3>Original Image</h3>
             <img id="flipped-image" src="images/lemonade.jpg" />
           </div>
-          <div>
+          <div class="manipulate-width">
             <h3>Manipulated Image</h3>
-            <canvas id="flipped-canvas" />
+            <canvas id="flipped-canvas"></canvas>
           </div>
         </div>
 
+        <h2>Resizing an image</h2>
+        <div id="resize-wrapper" class="wrapper">
+          <div>
+            <h3>Original Image</h3>
+            <img id="resized-image" src="images/littleGant.jpg" />
+          </div>
+          <div>
+            <h3>Manipulated Image</h3>
+            <div class="canvas-wrapper">
+              <canvas id="resized-canvas-01"></canvas>
+              <canvas id="resized-canvas-02"></canvas>
+            </div>
+          </div>
+        </div>
 
+        <h2>Cropping an image</h2>
+        <div id="resize-wrapper" class="wrapper">
+          <div class="manipulate-width">
+            <h3>Original Image</h3>
+            <img id="cropped-image" src="images/cake.jpg" />
+          </div>
+          <div>
+            <h3>Manipulated Image</h3>
+            <div class="canvas-wrapper">
+              <canvas id="cropped-canvas"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
