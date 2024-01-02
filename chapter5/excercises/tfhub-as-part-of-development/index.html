@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Inception v3 model example</title>
+    <meta charset="UTF-8" />
+    <style>
+      .image-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+      .image-wrapper > div {
+        width: 48%;
+      }
+      img {
+        width: 100%;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div id="app">
+      <h1>Object classification with Inception v3</h1>
+      <p>
+        The model is unable to indentify all of these images perfectly because of multiple reasons.
+        <ul>
+          <li>Has the model been trained to identify all of these objects?</li>
+          <li>Does the model recognize a painting as a painting?</li>
+          <li>Is the image quality good enough to make a good guess?</li>
+        </ul>
+        <small>
+          Open console to check how the inception performs to a specific image with more detail
+        </small>
+      </p>
+
+      <p id="processing"></p>
+
+      <div class="image-wrapper">
+        <div>
+          <img class="image" src="static/images/A_fedora_hat,_made_by_Borsalino.jpg" />
+          <h2>Fedora</h2>
+          <p class="prediction"></p>
+        </div>
+        <div>
+          <img class="image" src="static/images/Bodegón_de_recipientes_(Zurbarán).jpg" />
+          <h2>Painting of vases</h2>
+          <p class="prediction"></p>
+        </div>
+        <div>
+          <img class="image" src="static/images/The_Sounds_of_Earth_-_GPN-2000-001976.jpg" />
+          <h2>Disk / Vinyl</h2>
+          <p class="prediction"></p>
+        </div>
+        <div>
+          <img class="image" src="static/images/Five_string_kanteles.jpg" />
+          <h2>Kantele</h2>
+          <p class="prediction"></p>
+        </div>
+      </div>
+    </div>
+    <script src="/src/main.js"></script>
+  </body>
+</html>
