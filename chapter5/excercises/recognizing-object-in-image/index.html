@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cropping image example</title>
+    <meta charset="UTF-8" />
+    <style>
+      .image-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+      .image-wrapper > div {
+        width: 48%;
+        position: relative;
+      }
+      .image-wrapper > div > img,
+      .image-wrapper > div > .prediction {
+        height: auto;
+      }
+      .image-wrapper > div > .prediction {
+        position: absolute;
+        left: 0;
+      }
+      img {
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1>Pet face classification in image</h1>
+      <p>
+        <small>
+          Open console to check how the inception performs to a specific image with more detail
+        </small>
+      </p>
+
+      <p id="processing"></p>
+
+      <div class="image-wrapper">
+        <div>
+          <img class="image" src="static/images/dog1.jpg" />
+          <canvas class="prediction"></canvas>
+          <canvas class="cropped"></canvas>
+        </div>
+        <div>
+          <img class="image" src="static/images/dog2.jpg" />
+          <canvas class="prediction"></canvas>
+          <canvas class="cropped"></canvas>
+        </div>
+      </div>
+    </div>
+    <script src="/src/main.js"></script>
+  </body>
+</html>
