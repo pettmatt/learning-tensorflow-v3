@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js"></script>
+    <script>
+      const inputs = tf.tensor([-1, 0, 1, 2, 3, 4]) // Inputs are placed in the X axis
+      const answers = tf.tensor([-4, -2, 0, 2, 4, 6]) // Answers in the Y axis, could be named using the axises
+
+      // Creating model
+      const model = tf.sequential()
+
+      // If the model had more than one layer, only the first one would need to define the inputShape.
+      // Other layers are able to infer the inputShape, because the input is the output of the
+      // first layer, which defines the shape. 
+      // The output shape is defined based on the last layer, which doesn't require any action(s).
+      model.add(
+        tf.layers.dense({
+          inputShape: 1, // shape is defined based on the intented input, which is in this case a single number, single value of a tensor or one value of 1D tensor.
+          // the shape could be defined as "[1]" and would result to the same output. [4] would mean that the expeceted input is [1, 2, 3 ,4] or 4 values of a tensor.
+          // If I misunderstood the explanation, the explanation above should be corrected.
+          units: 1, // defines  the neuron amount, which is 1 in this case. Units define the output tensor.
+        })
+      )
+
+      model.compile({
+        optimizer: 'sgd',
+        loss: 'meanSquaredError',
+      })
+
+      // Print out the model structure
+      // With this method you can inspect layers to check the weights that the model is using.
+      model.summary()
+
+      // Train
+      model.fit(inputs, answers, { epochs: 300 }).then((history) => {
+        const inputTensor = tf.tensor([10])
+        const answer = model.predict(inputTensor)
+        console.log(`10 results in ${Math.round(answer.dataSync())}`)
+        console.log(`History`, history)
+        // cleanup
+        tf.dispose([inputs, answers, model, answer, inputTensor])
+      })
+    </script>
+  </head>
+  <body>
+    <h1>Check the console log!</h1>
+  </body>
+</html>
