@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js"></script>
+    <script>
+      const jsxs = []
+      const jsys = []
+      const dataSize = 10
+      const stepSize = 0.001
+
+      // Before asking, yes. There is better way to solve this specific problem,
+      // but wouldn't it be boring way of understanding the concepts in ML?
+      for (let i = 0; i < dataSize; i = i + stepSize) {
+        jsxs.push(i)
+        jsys.push(i * i)
+      }
+
+      const xs = tf.tensor(jsxs)
+      const ys = tf.tensor(jsys)
+
+      const model = tf.sequential()
+      
+      // Just in case I forgot, neurons reference to the "hidden" layer that makes the ml a "black box".
+      // Neuron amount references to the amount of possible trainable neurons (in hidden layer), which inturn affects how accurate and advanced the network is.
+      // This is where we can define/specify our activation functions.
+      model.add(
+        tf.layers.dense({
+          inputShape: 1,
+          units: 20, // <-- neuron amount or "general" term, how many nodes there are in the hidden layer.
+          activation: "relu", // <-- what kind of activation function the layer should use.
+        })
+      )
+
+      // Another layers just for testing how it impacts the results.
+      // There are trade offs when adding layers, it's about the person to choose which approach is needed.
+      // Without second hidden layer:
+      // Callback 139 Object { loss: 1.4305665493011475 }
+      // With the second hidden layer:
+      // Callback 139 Object { loss: 0.027707628905773163 }
+      model.add(
+        tf.layers.dense({
+          units: 20,
+          activation: "relu",
+        })
+      )
+
+      // final layer, which defines the output shape.
+      model.add(
+        tf.layers.dense({
+          units: 1
+        })
+      )
+
+      model.compile({
+        optimizer: "adam",
+        loss: "meanSquaredError"
+      })
+
+      // If you check the console, you can find that there are 61 trainable neurons in the network.
+      // This will include both layers. First one contains 40 and second one has 21.
+      // Where the one comes from? Remember that 20 come from the amount of data and the 1 comes from nodes.
+      // In case of the 40, there's 20 nodes, which get 20 lines or "matched data".
+
+      // If the data isn't separated in to batches the output shape will be shown as [null,20],
+      // 20 indicating the neuron amount and null being the batch size.
+      model.summary()
+
+      // Callbacks are a way to check what's happening in the "black box" and are used to gain insight
+      // how the model is performing with the settings. Compared to normal callback function, in MLs
+      // the callback is a object, which contains the functionality. 
+      // The object is used to define when the callback should be executed through life cycle methods.
+      const printCallback = {
+        onEpochEnd: (epoch, log) => {
+          console.log("Callback", epoch, log)
+        }
+      }
+
+      model.fit(xs, ys, {
+        epochs: 40,
+        callbacks: printCallback,
+        batchSize: 64 // Batch sizes can optimize the model, but it's also good manners to put the data into batches, when there's enough data.
+        // Note that batchSize can also limit what kind of machine can run the model.
+        // The smaller the batch, the more machines can run it (over simplified, but at this point satisfying rule of thumb).
+      }).then((history) => {
+        const tensor = tf.tensor([7])
+        const answer = model.predict(tensor)
+        console.log("History", history)
+        console.log("Result for input '7':", Math.round(answer.dataSync()))
+
+        tf.dispose(xs, ys, model, tensor, answer)
+      })
+    </script>
+  </head>
+  <body>
+    <h1>Check the console log!</h1>
+  </body>
+</html>
