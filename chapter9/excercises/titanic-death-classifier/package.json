@@ -1,0 +1,21 @@
+{
+  "name": "simple-npm-example",
+  "version": "1.0.0",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "start": "node run index.js",
+    "dev": "nodemon run index.js"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.0.0",
+    "@tensorflow/tfjs-node": "^3.0.0",
+    "danfojs-node": "^1.1.2"
+  },
+  "keywords": [
+    "TensorFlow.js"
+  ],
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
