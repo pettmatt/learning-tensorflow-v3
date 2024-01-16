@@ -4,7 +4,7 @@ import createTfModel from "./createModel.js"
 
 async function trainModel() {
     const [trainingDataset, testDataset] = await fetchTitanicData()
-    console.log("============ Datasets fetched ============")
+    console.log("\n============ Datasets fetched ============\n")
     console.log("Testing dataset", testDataset.shape[0])
     console.log("Training dataset", trainingDataset.shape[0])
 
@@ -20,8 +20,8 @@ async function trainModel() {
 
     await model.fit(trainX, trainY, {
         batchSize: 32,
-        epochs: 150,
-        // validationData: [testX, testY]
+        epochs: 50,
+        // validationData: [testX, testY],
         validationSplit: 0.2
     })
 }

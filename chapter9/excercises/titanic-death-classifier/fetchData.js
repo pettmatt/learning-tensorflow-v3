@@ -1,4 +1,5 @@
 import * as dfd from "danfojs-node"
+import optimizeDatasetBasedOnSex from "./optimize-model.js"
 
 export async function fetchTitanicData() {
     try {
@@ -28,7 +29,8 @@ async function createUsableTitanicDatasets() {
     // full.describe().print()
 
     const cleanFullList = cleanDataset(full)
-    const encodedFullList = encodeDatasetColumns(cleanFullList, ["Embarked", "Sex"])
+    const optimizeDataset = optimizeDatasetBasedOnSex(dfd, cleanFullList)
+    const encodedFullList = encodeDatasetColumns(optimizeDataset, ["Embarked"])
     const separatedLists = createSampleDatasets(encodedFullList, true)
     return separatedLists
 }
