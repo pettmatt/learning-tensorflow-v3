@@ -1,16 +1,24 @@
+import { encodeDatasetColumns } from "./fetchData.js"
+
 export default function optimizeDatasetBasedOnSex(dfd, data) {
-    console.log("\n=========== Optimize dataset based on sex ===========\n")
-    const sexOneHot = dfd.getDummies(data["Sex"], {prefix: "is" })
+    console.log("\n=========== Optimize dataset based on sex and honorific ===========\n")
+    const sexOneHot = dfd.getDummies(data["Sex"], { prefix: "is" })
     sexOneHot.head().print()
-
+    
     data.drop({ columns: ["Sex"], axis: 1, inplace: true })
-    data.addColumn("male", sexOneHot["is_male"], { inplace: true })
-    data.addColumn("female", sexOneHot["is_female"], { inplace: true })
-
+    data.addColumn("Male", sexOneHot["is_male"], { inplace: true })
+    data.addColumn("Female", sexOneHot["is_female"], { inplace: true })
+    
     const ageBuckets = data["Age"].apply(ageToBucket) // apply function to every row of data
     data.addColumn("Age_bucket", ageBuckets, { inplace: true })
+    
+    // Because some people didn't survive based on their "title",
+    // we can try to enhance our model by including the name honorific.
+    data["Name"] = data["Name"].apply(nameHonorificToBucket)
+    data.head().print()
+    const encodedData = encodeDatasetColumns(data, ["Name"])
 
-    const normalizedData = normalizeData(dfd, data)
+    const normalizedData = normalizeData(dfd, encodedData)
     return normalizedData
 }
 
@@ -22,6 +30,10 @@ function ageToBucket(age) {
     if (age < 10) return 0
     else if (age < 40) return 1
     else return 2
+}
+
+function nameHonorificToBucket(name) {
+    return name.split(" ").filter(p => p.includes("."))[0].replace(".", "")
 }
 
 function normalizeData(dfd, data) {

@@ -43,7 +43,7 @@ function cleanDataset(data) {
     // emptyRate.print()
     
     const clean = data.drop({
-        columns: ["Name", "PassengerId", "Cabin", "Ticket"]
+        columns: ["PassengerId", "Cabin", "Ticket"]
     })
     
     // DropNa() should make sure the end product is complete record of a passenger without missing data.
@@ -53,7 +53,7 @@ function cleanDataset(data) {
     return intactDataSet
 }
 
-function encodeDatasetColumns(data, columnNames) {
+export function encodeDatasetColumns(data, columnNames) {
     if (typeof columnNames !== "object") {
         console.log("EncodeDataseColumns-function: Please pass an array as the secondary argument.")
         return
@@ -67,7 +67,7 @@ function encodeDatasetColumns(data, columnNames) {
     })
 
     // Uncomment if visual check is necessary.
-    // data.head().print()
+    data.head().print()
 
     return data
 }
