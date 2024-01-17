@@ -1,0 +1,27 @@
+{
+  "name": "node-train-houses",
+  "version": "1.0.0",
+  "description": "Showing npm non-browser example with Node.js",
+  "main": "./src/index.ts",
+  "module": "module",
+  "scripts": {
+    "start": "npm run build:live",
+    "watch": "nodemon --watch './**/*.{ts}' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' ./src/index.ts",
+    "dev": "tsc-watch --onSuccess \"npm run watch\"",
+    "build": "tsc -p .",
+    "build:live": "nodemon --watch 'src/**/*.js' --exec \"ts-node\" src/index.js"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^3.0.0",
+    "@tensorflow/tfjs-node-gpu": "^2.7.0",
+    "fs": "^0.0.1-security",
+    "glob": "^7.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.16",
+    "nodemon": "^2.0.6",
+    "ts-node": "^10.9.2",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.3.3"
+  }
+}
