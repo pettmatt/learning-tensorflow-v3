@@ -40,6 +40,8 @@ export default function getModel() {
     )
 
     model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
+
+    // Flatten for connecting to deep layers
     model.add(tf.layers.flatten())
 
     // Hidden layer
