@@ -6,7 +6,7 @@ export async function fetchTitanicData() {
         // Check if clean-data directory has the files before creating them
         const dfTrain = await dfd.readCSV("./clean-data/cleanTest.csv") || null
         const dfTest = await dfd.readCSV("./clean-data/cleanTrain.csv") || null
-        
+
         return [dfTest, dfTrain]
     } catch (error) {
         console.log("fetchData.js fetchTitanicData:", error)
@@ -41,11 +41,11 @@ function cleanDataset(data) {
     const emptyRate = emptySpots.div(data.isNa().count())
     // console.log("Empty rate (Going to be cleaned)")
     // emptyRate.print()
-    
+
     const clean = data.drop({
         columns: ["PassengerId", "Cabin", "Ticket"]
     })
-    
+
     // DropNa() should make sure the end product is complete record of a passenger without missing data.
     const intactDataSet = clean.dropNa()
     console.log("After cleaning the row-count is now", intactDataSet.shape[0])
@@ -67,7 +67,7 @@ export function encodeDatasetColumns(data, columnNames) {
     })
 
     // Uncomment if visual check is necessary.
-    data.head().print()
+    // data.head().print()
 
     return data
 }

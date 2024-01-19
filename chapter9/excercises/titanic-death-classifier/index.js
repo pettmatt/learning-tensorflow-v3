@@ -21,7 +21,7 @@ async function trainModel() {
     await model.fit(trainX, trainY, {
         batchSize: 32,
         epochs: 50,
-        // validationData: [testX, testY],
+        validationData: [testX, testY],
         validationSplit: 0.2
     })
 }
