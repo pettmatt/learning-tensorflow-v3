@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SSD Mobilenet v2 model example</title>
+    <meta charset="UTF-8" />
+    <style>
+      .image-wrapper {
+        position: relative;
+      }
+      .image-wrapper > div {
+        width: 100%;
+      }
+      img {
+        width: 100%;
+      }
+      .image-wrapper > canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1>Object classification with SSD Mobilenet v2</h1>
+
+      <p id="processing"></p>
+
+      <h2>Utilizing topk function</h2>
+      <div class="image-wrapper">
+        <img id="image-topk" class="image" src="static/images/Bodegón_de_recipientes_(Zurbarán).jpg" />
+        <canvas id="image-result-topk"></canvas>
+      </div>
+
+      <h2>Advanced</h2>
+      <div class="image-wrapper">
+        <img id="image-advanced" class="image" src="static/images/Bodegón_de_recipientes_(Zurbarán).jpg" />
+        <canvas id="image-result-advanced"></canvas>
+      </div>
+
+      <h2>Detecting video feed (webcam)</h2>
+      <div class="video-wrapper">
+        <video clas="video" autoplay></video>
+        <canvas id="video-result"></canvas>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
