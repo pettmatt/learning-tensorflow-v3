@@ -1,0 +1,1 @@
+Excercise was skipped due to technical difficulties, where reshaping a tensor was not possible because of the shape was incorrect, and I was unable to successfully fix the issue or find relevant fix.
