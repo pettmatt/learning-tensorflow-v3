@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.6.0/dist/tf.min.js"></script>
+  </head>
+  <body>
+    <h1>Simplest Binarize Image</h1>
+    <h3>Input Image:</h3>
+    <img id="input" src="/skull.jpg" style="max-width: 100vw;" />
+    <label for="threshold">Define color threshold</label>
+    <input type="number" name="threshold" id="thresholdInput" value="50" />
+    <button id="start">Trace the image</button>
+    <h3>Output Image:</h3>
+    <canvas id="output" style="max-width: 100vw;"></canvas>
+    <script>
+      window.addEventListener("load", function () {
+        document.querySelector("#start").addEventListener("click", () => {
+            const threshold = Number(document.querySelector("#thresholdInput").value) || 50
+            doSomeMagic(threshold)
+        })
+
+        // Don't believe the name, this is just image tracing function
+        function doSomeMagic(thresholdNumber = 50) {
+            tf.tidy(() => {
+                // Read the image and turn it to tensors
+                const inputImage = document.getElementById("input")
+                const inTensor = tf.browser.fromPixels(inputImage, 1)
+                const data = inTensor.dataSync()
+
+                // Do some "magic" in here
+                console.log("Raw data", data)
+                // Alrgight, because there is some variation between colors, we need to state
+                // what is the threshold where a color should be considered to be traceable.
+                // 0 = black, which can be seen when observed the data prompt.
+                const threshold = thresholdNumber
+                // We have two tensors that are used to replace values in the image tensor.
+                // Everything that has value above the threshold, should have the value below.
+                // Creates a tensor with the length of "inTensor" that is full of ones.
+                const white = tf.onesLike(inTensor).asType("float32")
+                // Same as above, but full of zeros.
+                const black = tf.zerosLike(inTensor)
+                // Because where-method expects a boolean tensor as the condition, we need to create
+                // another tensor, which has gone through the check, if a color is under the threshold.
+                const booleanTensor = tf.less(inTensor, threshold)
+                // Now we can use where-method to modify the image tensor.
+                // The where condition: "If condition is true, use black 
+                // tensor value which can be found in the same index position,
+                // otherwise use the white value in that same position."
+                const magic = tf.where(booleanTensor, black, white)
+
+                // Show result to personel to observe if we have completed the challenge
+                const canvas = document.getElementById("output")
+                tf.browser.toPixels(magic, canvas)
+
+                // And now we should have an application that can trace the image,
+                // based on the color value, the lower the threshold, the more white is used.
+                // If the value is -1 even the black spots are filled with white, 
+                // producing completely white canvas.
+            })
+        }
+      })
+    </script>
+  </body>
+</html>
