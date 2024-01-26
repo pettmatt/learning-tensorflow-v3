@@ -7,14 +7,14 @@ export default defineConfig({
     server: {
         proxy: {
             "/api/spotify": {
-                target: `${import.meta.env.VITE_BACKEND_URL}/api/spotify`,
+                target: `http://localhost:3010/spotify`,
                 changeOrigin: true,
             },
-            "/api/spotify-account": {
-                target: `${import.meta.env.VITE_BACKEND_URL}/api/spotify-account`,
-                changeOrigin: true,
-            },
+            // "/api/spotify-account": {
+            //     target: `${import.meta.env.VITE_BACKEND_URL}/api/spotify-account`,
+            //     changeOrigin: true,
+            // },
         },
-        cors: false
+        cors: true
     }
 })

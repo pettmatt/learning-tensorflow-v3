@@ -1,7 +1,6 @@
 {
   "name": "simple-npm-example",
   "version": "1.0.0",
-  "description": "Showing what an NPM version would look like",
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html --open",
@@ -16,7 +15,5 @@
   },
   "keywords": [
     "TensorFlow.js"
-  ],
-  "author": "Gant Laborde",
-  "license": "UNLICENSED"
+  ]
 }

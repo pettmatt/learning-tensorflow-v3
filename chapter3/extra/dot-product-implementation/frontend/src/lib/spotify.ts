@@ -1,59 +1,69 @@
-const applicationScope = ["user-read-playback-position", "user-top-read", "user-read-recently-played"]
-const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID
-const redirectUri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI
-const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET
+const serverUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3010"
 
-const tokenExpirationTime = 3600 * 1000
+export async function makeApiRequest(path: string) {
+    const token = getLocalToken()
+    const res = await fetch(`${serverUrl}${path}`, {
+        headers: { Authorization: token }
+    })
 
-export async function login() {
-    const res = await fetch("https://accounts.spotify.com" +
-        `?response_type=code` +
-        `&client_id=${clientId}` +
-        `&redirect_uri=${redirectUri}` +
-        `&scope=${applicationScope.join(" ")}`,
-        {
-            mode: "no-cors"
+    const body = await res.json()
+
+    return body
+}
+
+function getLocalToken(): string {
+    const tokenLS = localStorage.getItem("token") || ""
+    const tokenObject = JSON.parse(tokenLS)
+    return `${tokenObject.token_type} ${tokenObject.access_token}` || ""
+}
+
+export async function getAccessToken(code: string | null, state: string | null) {
+    const response = await fetch(`${serverUrl}/spotify/token`, {
+        method: "POST",
+        body: JSON.stringify({
+            code,
+            state,
+        })
+    })
+
+    const body = await response.json()
+
+    if (!response.ok) {
+        return {
+            error: body
         }
-    )
-
-    if (!res.ok) console.log("User authorization was not OK", res)
-
-    const data = await res.json()
-    console.log("LOGIN DATA", data)
-
-    // Exchange the auth code for access token
-    // const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/x-www-form-urlencoded",
-    //         "Authorization": "Basic "
-    //     },
-    //     body: JSON.stringify({
-    //         // code: data.code,
-    //         client_id: clientId,
-    //         grant_type: "authorization_code",
-    //         redirect_uri: redirectUri,
-    //     })
-    // })
-
-    // if (!tokenRes.ok) console.log("Token request was not OK")
-
-    // console.log("Token", await tokenRes.json())
-}
-
-// export function async getUserAccessToken() {
-//     const authRes = await fetch("https://api.spotify.com/v1")
-//     // const authorized = 
-// }
-
-export function logOut() {
-
-}
-
-export async function getTopSongs(token: string) {
-    const config = {
-        Authorization: `Bearer`
     }
 
-    // const authRes = await fetch("https://api.spotify.com/v1", config)
+    return { token: body.data }
+}
+
+export function validateSessionToken(token: object) {
+    localStorage.setItem("token", JSON.stringify(token))
+
+    const currentTime = new Date().getTime()
+    localStorage.setItem("token-creation-time", JSON.stringify(currentTime))
+
+    const validated = checkSession()
+
+    return validated
+}
+
+export function checkSession() {
+    const currentTime = new Date().getTime()
+    const currentTimeInSeconds = currentTime / 1000
+    const tokenLS = localStorage.getItem("token")
+    const token = tokenLS ? JSON.parse(tokenLS) : ""
+
+    if (!token) return false
+
+    const tokenCreationTimeLS = localStorage.getItem("token-creation-time")
+
+    if (!tokenCreationTimeLS) return false
+
+    const tokenCreationTime = Number(tokenCreationTimeLS) / 1000
+    const expired = (tokenCreationTime + token.expires_in) < currentTimeInSeconds
+
+    if (expired) return false
+
+    return true
 }

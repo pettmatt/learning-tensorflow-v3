@@ -1,10 +1,12 @@
 <script lang="ts">
     import JsxGraph from "./components/JsxGraph.svelte"
     import tfMain from "./lib/tensorflow-base"
-    import SpotifyLogin from "./components/SpotifyLogin.svelte";
-    // tfMain()
+    import SpotifyLogin from "./components/SpotifyLogin.svelte"
+    import Questionere from "./components/Questionere.svelte"
+    import { checkSession } from "./lib/spotify"
 
     const showGraph = false
+    let loggedIn = checkSession()
 </script>
 
 <main>
@@ -12,9 +14,9 @@
 
     <SpotifyLogin />
 
-    {#if !showGraph }
+    {#if !showGraph && loggedIn }
 
-        <h2>Ye</h2>
+        <Questionere />
 
     {:else if showGraph}
 
