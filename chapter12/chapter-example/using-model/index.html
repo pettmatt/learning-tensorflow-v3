@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js"></script>
+    <script type="module">
+      window.onload = function() {
+        document.querySelector("#start").addEventListener("click", () => {
+          dicify()
+        })
+      }
+
+      import { DICE_DATA } from "./dice.js"
+      const diceData = DICE_DATA.data
+      const source = "./logo.png"
+      const numDice = 32
+      const preSize = numDice * 10
+
+      function cutData(id) {
+        const image = document.querySelector(`#${id}`)
+        const imageTensor = tf.browser.fromPixels(image, 1)
+        const resized = tf.image.resizeNearestNeighbor(imageTensor, [
+          preSize, preSize
+        ])
+        const cutSize = numDice
+        const heightCuts = tf.split(resized, cutSize)
+        const grid = heightCuts.map(sliver => tf.split(sliver, cutSize, 1))
+        return grid
+      }
+
+      function predictResults(model, tensorGrid) {
+        return tf.tidy(() => {
+          const patchStack = []
+
+          tensorGrid.forEach((row) => {
+            const resized = tf.image.resizeNearestNeighbor(tf.stack(row), [12, 12])
+            patchStack.push(resized)
+          })
+
+          const imageGroup = tf.concat(patchStack)
+          console.log("Ready to predict shape ", imageGroup.shape)
+          const answers = model.predict(imageGroup)
+          console.log("Predicted shape ", answers.shape)
+          return answers
+        })
+      }
+
+      async function showResults(answers) {
+        tf.tidy(() => {
+          const diceTensors = diceData.map((dt) => tf.tensor(dt))
+          const { indices } = tf.topk(answers)
+          const answerIndices = indices.dataSync()
+
+          // Offered explanation why concat is used (by the book):
+          // You have to concat via tensors, can't use 2d JS Arrays
+          // If you try to keep these in JS and then convert
+          // to tensor, they will be broken
+          // This is the issue  https://bit.ly/2KsOrm5
+          const tensorColumns = []
+          for (let y = 0; y < numDice; y++) {
+            const tensorRow = []
+
+            for (let x = 0; x < numDice; x++) {
+              const curIndex = y * numDice + x
+              tensorRow.push(diceTensors[answerIndices[curIndex]])
+            }
+
+            const oneRow = tf.concat(tensorRow, 1)
+            tensorColumns.push(oneRow)
+          }
+
+          const diceConstruct = tf.concat(tensorColumns)
+          const displayElement = document.querySelector("#canvas")
+          tf.browser.toPixels(diceConstruct, displayElement)
+        })
+      }
+
+      async function dicify() {
+        const modelElement = document.querySelector("#upload-json")
+        const weightElement = document.querySelector("#upload-weights")
+        if (!modelElement && !weightElement) {
+          console.error("Couldn't find model files.")
+          return
+        }
+
+        const modelFiles = tf.io.browserFiles([
+          modelElement.files[0],
+          weightElement.files[0]
+        ])
+
+        const model = await tf.loadLayersModel(modelFiles)
+        const grid = await cutData("input")
+        const predictions = await predictResults(model, grid)
+        await showResults(predictions)
+
+        tf.dispose([model, predictions])
+        tf.dispose(grid)
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Using previously created model</h1>
+
+    <input type="file" id="upload-json" />
+    <input type="file" id="upload-weights" />
+    <button id="start">start</button>
+
+    <h2>Target:</h2>
+    <img id="input" src="./logo.png" style="max-width: 100vw;" />
+
+    <h2>Result:</h2>
+    <canvas id="canvas" style="image-rendering: pixelated; width: 100%;"></canvas>
+  </body>
+</html>
