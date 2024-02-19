@@ -14,7 +14,7 @@
 
     <SpotifyLogin />
 
-    {#if !showGraph && loggedIn }
+    {#if loggedIn }
 
         <Questionere />
 

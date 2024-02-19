@@ -10,3 +10,4 @@ chess_images.csv
 .env-local
 .env-test
 .env-dev
+chapter3/extra/dot-product-implementation

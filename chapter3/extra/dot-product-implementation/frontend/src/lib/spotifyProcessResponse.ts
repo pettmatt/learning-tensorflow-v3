@@ -16,7 +16,7 @@ function handleErrorResponse(response: any) {
     } else if (response.error.status === 403) {
         return { error: { message: "Bad OAuth request. API error.", s_message: response.error.message } }
     } else if (response.error.status === 429) {
-        return { error: { message: "Application has  exceeded the rate limit. Try again later", s_message: response.error.message } }
+        return { error: { message: "Application has  exceeded the rate limit. Try again later.", s_message: response.error.message } }
     } else {
         return { error: response }
     }

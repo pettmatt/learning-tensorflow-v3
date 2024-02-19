@@ -1,6 +1,6 @@
 <!-- Question what the user thinks of these artists, songs and genres -->
 <script lang="ts">
-    import { type Item, type Question } from "../lib/spotifyInterface"
+    import { type Artist, type Question, type Track } from "../lib/spotifyInterface"
     import QuestionereProgressBar from "./QuestionereProgressBar.svelte"
     import { makeApiRequest } from "../lib/spotify"
 
@@ -10,7 +10,7 @@
     let currentQuestion = 0
     let questions: Question[] = [
         {
-            question: "Select genres you want to listen",
+            question: "Select genres",
             uri: "/spotify/genres",
             options: [],
             getOptions: async (): Promise<string>  => {
@@ -33,16 +33,14 @@
             getOptions: async (): Promise<string> => {
                 const artistObject = await makeApiRequest(questions[currentQuestion].uri)
                 const artists = artistObject.items
-                return artists.map((a: Item) => 
+                return artists.map((a: Artist) => 
                     "<img src='" + a.images[2].url + "' alt='" + a.type + " profile image' />" +
                     "<h3>" + a.name + "</h3>" +
                     "<div class='genre-wrapper'>" +
                         "<ul>" +
-                            a.genres.map((g: string) =>
-                                "<li>" +
-                                    capitalizeReplaceDashesInString(g) +
-                                "</li>"
-                            ) +
+                            a.genres.map((g: string) => (
+                                "<li>" + capitalizeReplaceDashesInString(g) + "</li>"
+                            )) +
                         "</ul>" +
                     "</div>"
                 )
@@ -56,21 +54,20 @@
             getOptions: async (): Promise<string> => {
                 const trackObject = await makeApiRequest(questions[currentQuestion].uri)
                 const tracks = trackObject.items
-                console.log(tracks)
-                return "Not done yet"
-                // return tracks.map((t: Item) =>
-                //     "<img src='" + t.images[2].url + "' alt='" + t.type + " profile image' />" +
-                //     "<h3>" + t.name + "</h3>" +
-                //     "<div class='genre-wrapper'>" + 
-                //         "<ul>" +
-                //             t.genres.map((g: string) => 
-                //                 "<li>" +
-                //                     capitalizeReplaceDashesInString(g) +
-                //                 "</li>"
-                //             ) +
-                //         "</ul>" +
-                //     "</div>"
-                // )
+                return tracks.map((t: Track) =>
+                    "<img src='" + t.album.images[1].url + "' alt='" + t.type + " image' />" +
+                    "<h3>" + t.name + "</h3>" +
+                    "<p>" + t.album.name + "</p>" +
+                    "<div class='genre-wrapper'>" +
+                        "<ul>" +
+                            t.artists.map((a: Artist) => 
+                                "<li>" +
+                                    a.name +
+                                "</li>"
+                            ) +
+                        "</ul>" +
+                    "</div>"
+                )
             },
             uri: "/spotify/u/tracks",
             answers: [],
@@ -150,7 +147,7 @@
                             {/each}
                         {:catch error}
                             <p class="error-message">Couldn't fetch resources :(</p>
-                            <p>Check if the session has been expired.</p>
+                            <p>Check if the session has expired.</p>
                         {/await}
                     {:else}
                         {#each q.options as o}
@@ -191,6 +188,18 @@
         margin: 0.25em 0;
         text-align: left;
         width: 100%;
+    }
+    :global(.genre-wrapper ul) {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    :global(.genre-wrapper ul li) {
+        padding: 0.3em 0.5em;
+        margin: 0.25em;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: inline-block;
+        border-radius: 0.25em;
+        max-width: 35%;
     }
     :global(div ul li > *) {
         width: 100%;

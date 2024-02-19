@@ -12,7 +12,6 @@ const app = new Hono()
 const clientId = env["SPOTIFY_CLIENT_ID"]
 const redirectUri = env["SPOTIFY_REDIRECT_URI"]
 
-// app.use(cors())
 app.use("/*", cors({
     origin: "http://localhost:5173",
     allowHeaders: ["Cross-Origin", "Authorization"],
@@ -71,7 +70,6 @@ app.post("/spotify/token", async (c) => {
     bodyParams.append("grant_type", "authorization_code")
     bodyParams.append("redirect_uri", redirectUri)
     bodyParams.append("code", code)
-
     const res = await fetch("https://accounts.spotify.com/api/token", {
         method: "POST",
         headers: {
@@ -147,7 +145,6 @@ app.get("/spotify/u/tracks", async (c) => {
 app.get("/spotify/u/:endpoint", async (c) => {
     const token = c.req.header("Authorization")
     const endpoint = c.req.param("endpoint")
-
     const res = await fetch(`https://api.spotify.com/v1/me/top/${endpoint}`, {
         headers: {
             "Authorization": token,
@@ -194,10 +191,34 @@ app.get("/spotify/genres", async (c) => {
     return c.json(data)
 })
 
+app.get("/spotify/multiple-tracks", async (c) => {
+    const token = c.req.header("Authorization")
+    const query = c.req.header("Spotify-query")
+    const res = await fetch(`https://api.spotify.com/v1/search?q=${query}`, {
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json"
+        },
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        return c.json({
+            error: {
+                message: res.statusText,
+                status: res.status,
+                details: data,
+            }
+        })
+    }
+
+    return c.json(data)
+})
+
 app.get("/spotify/custom", async (c) => {
     const token = c.req.header("Authorization")
     const url = c.req.query("url")
-
     const res = await fetch(url, {
         headers: {
             "Authorization": token,
