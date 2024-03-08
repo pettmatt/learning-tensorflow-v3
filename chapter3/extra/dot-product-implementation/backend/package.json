@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "hono": "^3.11.11"
-  },
-  "scripts": {
-    "dev": "deno run --allow-net index.ts --watch",
-    "start": "deno run index.ts"
-  }
-}
